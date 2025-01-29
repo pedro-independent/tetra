@@ -31,7 +31,7 @@ function initButtonCharacterStagger() {
 
 initButtonCharacterStagger();
 
-/* Links Hover */
+/* Links Underline Hover */
 
 // ———— animation
 // const hoverLinks = document.querySelectorAll("[hover-link]");
@@ -131,3 +131,70 @@ initButtonCharacterStagger();
 //   },
 //   scale: 4,
 // });
+
+/* General Parallax */
+document.querySelectorAll("[parallax-container]").forEach((container) => {
+  const image = container.querySelector("[parallax-img]");
+  
+  if (image) {
+    const containerHeight = container.offsetHeight;
+    const imageHeight = image.offsetHeight;
+    const heightDifference = imageHeight - containerHeight;
+
+    // Apply the parallax effect
+    gsap.to(image, {
+      y: -heightDifference,
+      ease: "none",
+      scrollTrigger: {
+        trigger: container,
+        start: "top bottom",
+        end: "bottom top",
+        scrub: true,
+      },
+    });
+  }
+});
+
+
+/* Values Parallax with Manual Speed Control */
+
+const getSpeed = (element) => {
+  // Get speed from data-scroll-speed attribute, default to -100 if not set
+  return parseFloat(element.getAttribute("scroll-speed")) || -100;
+};
+
+document.querySelectorAll(".values-img-wrap").forEach((image) => {
+  gsap.to(image, {
+    y: getSpeed(image),
+    ease: "none",
+    scrollTrigger: {
+      trigger: image,
+      start: "top bottom",
+      end: "bottom top",
+      scrub: 1.2,
+    },
+    onComplete: () => ScrollTrigger.refresh(),
+  });
+});
+
+/* Horizontal Scroll */
+
+const totalSections = document.querySelectorAll(".hscroll-section").length;
+
+// GSAP horizontal scroll setup
+gsap.to(".hscroll-wrap", {
+  xPercent: -((totalSections - 1) * 100), 
+  ease: "none",
+  scrollTrigger: {
+    trigger: ".hscroll-wrap",
+    start: "top top",
+    end: () => `+=${totalSections * 600}vh`,
+    pin: true,
+    scrub: 1,
+    snap: {
+      snapTo: 1 / (totalSections - 1), // Snap to each slide
+      duration: 0.5, 
+      ease: "power1.inOut" 
+    },
+  }
+});
