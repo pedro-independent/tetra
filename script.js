@@ -137,21 +137,41 @@ document.querySelectorAll("[parallax-container]").forEach((container) => {
   const image = container.querySelector("[parallax-img]");
   
   if (image) {
-    const containerHeight = container.offsetHeight;
-    const imageHeight = image.offsetHeight;
-    const heightDifference = imageHeight - containerHeight;
+    const isHorizontal = container.getAttribute("parallax-container") === "horizontal";
 
-    // Apply the parallax effect
-    gsap.to(image, {
-      y: -heightDifference,
-      ease: "none",
-      scrollTrigger: {
-        trigger: container,
-        start: "top bottom",
-        end: "bottom top",
-        scrub: true,
-      },
-    });
+    if (isHorizontal) {
+      // Horizontal Parallax Effect
+      const containerWidth = container.offsetWidth;
+      const imageWidth = image.offsetWidth;
+      const widthDifference = imageWidth - containerWidth;
+
+      gsap.to(image, {
+        x: -widthDifference, // Moves the image horizontally
+        ease: "none",
+        scrollTrigger: {
+          trigger: container,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: true,
+        },
+      });
+    } else {
+      // Vertical Parallax Effect (Default)
+      const containerHeight = container.offsetHeight;
+      const imageHeight = image.offsetHeight;
+      const heightDifference = imageHeight - containerHeight;
+
+      gsap.to(image, {
+        y: -heightDifference, // Moves the image vertically
+        ease: "none",
+        scrollTrigger: {
+          trigger: container,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: true,
+        },
+      });
+    }
   }
 });
 
@@ -178,23 +198,72 @@ document.querySelectorAll(".values-img-wrap").forEach((image) => {
 });
 
 /* Horizontal Scroll */
+gsap.registerPlugin(ScrollTrigger);
 
-const totalSections = document.querySelectorAll(".hscroll-section").length;
+const hWrap = document.querySelector(".hscroll-wrap")
+const hSection = gsap.utils.toArray(".hscroll-section")
 
-// GSAP horizontal scroll setup
-gsap.to(".hscroll-wrap", {
-  xPercent: -((totalSections - 1) * 100), 
+let scrollTween = gsap.to(hSection, {
+  xPercent: -100 * (hSection.length - 1),
   ease: "none",
-  scrollTrigger: {
-    trigger: ".hscroll-wrap",
-    start: "top top",
-    end: () => `+=${totalSections * 600}vh`,
-    pin: true,
-    scrub: 1,
-    snap: {
-      snapTo: 1 / (totalSections - 1), // Snap to each slide
-      duration: 0.5, 
-      ease: "power1.inOut" 
-    },
+  scrollTrigger:{
+  trigger: ".hscroll-wrap",
+  pin: true,
+  scrub: 1,
+  end: "+=3000" 
   }
+});
+
+/* Program Scroll Animation */
+
+gsap.set(".program-item-sub-wrap", {
+  height: 0,
+  opacity: 0,
+  margin: 0,
+});
+
+let homeValues = gsap.timeline({
+  scrollTrigger: {
+    trigger: ".section_program",
+    start: "top top",
+    end: "bottom top",
+    scrub: true,
+    pin: true,
+    //markers: true,
+  },
+});
+
+const items = document.querySelectorAll(".program-item-wrap");
+const subItems = document.querySelectorAll(".program-item-sub-wrap");
+const headers = document.querySelectorAll(".program-h3");
+
+items.forEach((item, index) => {
+  // Close the previous sub-wrap and reset its color
+  if (index > 0) {
+    homeValues.to(
+      subItems[index - 1],
+      {
+        height: 0,
+        opacity: 0,
+        marginTop: 0,
+        duration: 1,
+        ease: "power2.inOut",
+      },
+      ">"
+    ); // Starts when the next one begins opening
+  }
+
+  // Open the current sub-wrap
+  homeValues.to(
+    subItems[index],
+    {
+      height: "auto",
+      opacity: 1,
+      marginTop: "2em",
+      duration: 1,
+      ease: "power2.inOut",
+      onComplete: () => ScrollTrigger.refresh(),
+    },
+    "<"
+  ); // Overlaps with the closing animation of the previous sub-wrap
 });
