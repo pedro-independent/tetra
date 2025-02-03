@@ -120,17 +120,49 @@ initButtonCharacterStagger();
 
 /* Scroll zoom kpi into section */
 
-// gsap.to("[kpi-zoom]", {
-//   scrollTrigger: {
-//     trigger: ".kpi-container",
-//     start: "top top",
-//     end: "bottom top",
-//     pin: true,
-//     onComplete: () => ScrollTrigger.refresh(),
-//     markers: true,
-//   },
-//   scale: 4,
-// });
+  // Select the section containing the numbers
+  let numberSection = document.querySelector(".kpi-section");
+
+  // Create GSAP animation
+  gsap.timeline({
+    scrollTrigger: {
+      trigger: numberSection,
+      start: "center top", // When the section reaches the top
+      end: "+=250%", // Duration of the effect
+      scrub: 1, // Smooth animation while scrolling
+      pin: true, // Keeps the section fixed during the animation
+      //pinSpacing: false, // Prevent extra white space
+      //markers: true
+    }
+  })
+  .to(".kpi-number", {
+    scale: 250, // Zoom into numbers (adjust as needed)
+    duration: 3,
+    ease: "power1.in",
+    transformOrigin: "40% 70%"
+  });
+
+  gsap.set(".about-cover", {opacity: 1});
+  gsap.timeline({
+    scrollTrigger: {
+      trigger: ".section_about",
+      start: "top top",
+      end: "+=100%", // Adjust scroll duration
+      scrub: 1, // Smooth animation
+      pin: true, // Keep section fixed during scroll
+    }
+  })
+  .to(".about-cover", {
+    opacity: 0,
+    duration: 1,
+    ease: "none"
+  });
+  
+
+/* KPI counter up */
+
+
+
 
 /* General Parallax */
 document.querySelectorAll("[parallax-container]").forEach((container) => {
@@ -198,7 +230,7 @@ document.querySelectorAll(".values-img-wrap").forEach((image) => {
 });
 
 /* Horizontal Scroll */
-gsap.registerPlugin(ScrollTrigger);
+
 
 const hWrap = document.querySelector(".hscroll-wrap")
 const hSection = gsap.utils.toArray(".hscroll-section")
