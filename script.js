@@ -161,6 +161,22 @@ initButtonCharacterStagger();
 
 /* KPI counter up */
 
+// const numAnim = new countUp.countUp("count", 35000, {enableScrollSpy: true});
+// numAnim.start();
+
+  
+      // const counterElement = document.getElementById("counter");
+      // const countUp = new countUp.CountUp('counter', 35000, { duration: 3 });
+
+      // function startCounting(entries) {
+      //     if (entries[0].isIntersecting) {
+      //         countUp.start();
+      //     }
+      // }
+
+      // const observer = new IntersectionObserver(startCounting, { threshold: 0.5 });
+      // observer.observe(counterElement);
+
 
 
 
