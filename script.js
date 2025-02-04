@@ -176,7 +176,7 @@ runSplit();
   gsap.timeline({
     scrollTrigger: {
       trigger: numberSection,
-      start: "center top", // When the section reaches the top
+      start: "40% top", // When the section reaches the top
       end: "+=250%", // Duration of the effect
       scrub: 1, // Smooth animation while scrolling
       pin: true, // Keeps the section fixed during the animation
@@ -205,27 +205,38 @@ runSplit();
     ease: "none"
   });
 
+
+/* Count Up KPI's */
+
+window.addEventListener('load', () => {
+  const kpi1 = document.querySelector('#kpi .kpi-number.cc-comma');
+  const kpi2 = document.querySelector('#kpi .kpi-span');
+
+  let tl = gsap.timeline({ 
+    paused: true,
+    scrollTrigger: {
+      trigger: '#kpi',
+      start: 'top 15%',
+    }
+  });
+
+  // Count-up animation with specific text content
+  tl.from(kpi1, {
+    textContent: 34993, // Starting number
+    duration: 2,
+    snap: { textContent: 1 }, // Ensures smooth counting
+    onUpdate: function () {
+      kpi1.textContent = parseInt(kpi1.textContent).toLocaleString(); // Format number with commas
+    }
+  }, 0);
   
-
-/* KPI counter up */
-
-// const numAnim = new countUp.countUp("count", 35000, {enableScrollSpy: true});
-// numAnim.start();
-
+    tl.from(kpi2, {
+    textContent: 20, // start from 0
+    duration: 2,
+    snap: { textContent: 1 }, // increment by 1
+  }, 0);
   
-      // const counterElement = document.getElementById("counter");
-      // const countUp = new countUp.CountUp('counter', 35000, { duration: 3 });
-
-      // function startCounting(entries) {
-      //     if (entries[0].isIntersecting) {
-      //         countUp.start();
-      //     }
-      // }
-
-      // const observer = new IntersectionObserver(startCounting, { threshold: 0.5 });
-      // observer.observe(counterElement);
-
-
+});
 
 
 /* General Parallax */
@@ -295,20 +306,38 @@ document.querySelectorAll(".values-img-wrap").forEach((image) => {
 
 /* Horizontal Scroll */
 
+const hWrap = document.querySelector(".hscroll-wrap");
+const hSection = gsap.utils.toArray(".hscroll-section");
 
-const hWrap = document.querySelector(".hscroll-wrap")
-const hSection = gsap.utils.toArray(".hscroll-section")
-
+// Horizontal scroll animation
 let scrollTween = gsap.to(hSection, {
   xPercent: -100 * (hSection.length - 1),
   ease: "none",
-  scrollTrigger:{
-  trigger: ".hscroll-wrap",
-  pin: true,
-  scrub: 1,
-  end: "+=3000" 
+  scrollTrigger: {
+    trigger: ".hscroll-wrap",
+    pin: true,
+    scrub: 1,
+    end: "+=4000",
   }
 });
+
+// Count-up animation inside horizontal scroll
+const kpi3 = document.querySelector("#count .number.cc-comma");
+
+gsap.from(kpi3, {
+  textContent: 7890, // Start from 0
+  duration: 2.5,
+  snap: { textContent: 1 },
+  scrollTrigger: {
+    trigger: "#count", // Element inside horizontal scroll
+    containerAnimation: scrollTween, // Connect animation to horizontal scroll
+    start: "left center", // Adjust trigger position
+  },
+  onUpdate: function () {
+    kpi3.textContent = parseInt(kpi3.textContent).toLocaleString(); // Format with commas
+  }
+});
+
 
 /* Program Scroll Animation */
 
