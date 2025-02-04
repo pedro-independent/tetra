@@ -118,6 +118,55 @@ initButtonCharacterStagger();
 
   });
 
+/* Headings Reveal On Scroll */
+
+
+let splitText, splitHeading;
+
+function runSplit() {
+  // Initialize SplitType for hover links
+  splitText = new SplitType("[hover-link]", {
+    types: "words, chars"
+  });
+
+}
+runSplit();
+
+
+/* Headings Reveal On Scroll */
+
+  // Select headings with the attribute
+  const headings = document.querySelectorAll('[scroll-reveal]');
+
+  headings.forEach((heading) => {
+      // Initialize SplitType.js with lines only
+      const splitText = new SplitType(heading, { types: "lines", lineClass: "line" });
+
+      // Wrap each .line in its own .line-wrap div
+      const lines = heading.querySelectorAll('.line');
+      lines.forEach((line) => {
+          const lineWrap = document.createElement('div');
+          lineWrap.classList.add('line-wrap');
+          line.parentNode.insertBefore(lineWrap, line);
+          lineWrap.appendChild(line); 
+      });
+
+      gsap.fromTo(
+          lines,
+          { yPercent: 100, },
+          {
+              yPercent: 0,
+              duration: 1.5,
+              ease: "power2.out",
+              stagger: 0.2,
+              scrollTrigger: {
+                  trigger: heading,
+                  start: "top 85%",
+                  end: "top 85%",
+              },
+          }
+      );
+  });
 /* Scroll zoom kpi into section */
 
   // Select the section containing the numbers
@@ -131,8 +180,6 @@ initButtonCharacterStagger();
       end: "+=250%", // Duration of the effect
       scrub: 1, // Smooth animation while scrolling
       pin: true, // Keeps the section fixed during the animation
-      //pinSpacing: false, // Prevent extra white space
-      //markers: true
     }
   })
   .to(".kpi-number", {
@@ -157,6 +204,7 @@ initButtonCharacterStagger();
     duration: 1,
     ease: "none"
   });
+
   
 
 /* KPI counter up */
