@@ -3,6 +3,7 @@ window.onbeforeunload = function () {
     window.scrollTo(0, 0);
   };
 
+const page = document.body.dataset.page;
 
 /* Buttons Hover*/
 
@@ -31,6 +32,25 @@ function initButtonCharacterStagger() {
 
 initButtonCharacterStagger();
 
+/* Menu Color Change On Scroll */
+
+// const navMenu = document.querySelector(".navbar-container");
+// const darkSections = document.querySelectorAll("[dark-section]");
+
+// darkSections.forEach((section) => {
+//   gsap.to(navMenu, {
+//     color: "#ffffff",
+//     scrollTrigger: {
+//       trigger: section,
+//       start: "top top",
+//       end: "90% top",
+//       toggleActions: "play none reverse none",
+//       markers: true,
+//     }
+//   });
+// });
+
+
 /* Links Underline Hover */
 
 // ———— animation
@@ -55,6 +75,8 @@ initButtonCharacterStagger();
 //     });
 //   });
 // });
+
+if (page === "home") {
 
 /* Flip */
 
@@ -223,7 +245,7 @@ window.addEventListener('load', () => {
   // Count-up animation with specific text content
   tl.from(kpi1, {
     textContent: 34993, // Starting number
-    duration: 2,
+    duration: 2.5,
     snap: { textContent: 1 }, // Ensures smooth counting
     onUpdate: function () {
       kpi1.textContent = parseInt(kpi1.textContent).toLocaleString(); // Format number with commas
@@ -232,7 +254,7 @@ window.addEventListener('load', () => {
   
     tl.from(kpi2, {
     textContent: 20, // start from 0
-    duration: 2,
+    duration: 2.5,
     snap: { textContent: 1 }, // increment by 1
   }, 0);
   
@@ -306,19 +328,43 @@ document.querySelectorAll(".values-img-wrap").forEach((image) => {
 
 /* Horizontal Scroll */
 
+/* Horizontal Scroll */
+
 const hWrap = document.querySelector(".hscroll-wrap");
 const hSection = gsap.utils.toArray(".hscroll-section");
+const navColor = document.querySelector(".navbar");
+const darkhSections = document.querySelectorAll("[dark-section]");
+
+// Get total width of hscroll-wrap
+let wrapWidth = hWrap.scrollWidth; // Full width of all sections combined
 
 // Horizontal scroll animation
 let scrollTween = gsap.to(hSection, {
-  xPercent: -100 * (hSection.length - 1),
+  x: () => - (wrapWidth - window.innerWidth), // Moves based on total width
   ease: "none",
   scrollTrigger: {
     trigger: ".hscroll-wrap",
     pin: true,
     scrub: 1,
-    end: "+=4000",
+    end: () => `+=${wrapWidth}`, // Adjust total scroll distance dynamically
   }
+});
+
+
+// Navbar color change inside horizontal scroll
+darkhSections.forEach((section) => {
+  gsap.to(navColor, {
+    color: "#ffffff", // Change navbar color to white
+    scrollTrigger: {
+      trigger: section,
+      containerAnimation: scrollTween, // Link to horizontal scroll
+      start: "left center", // When section enters viewport
+      end: "right center",
+      toggleActions: "play none reverse none",
+      onLeave: () => navColor.style.color = "#0D0E0F", // Change back to black when leaving
+      onEnterBack: () => navColor.style.color = "#ffffff", // Ensure smooth transition back if scrolling backward
+    }
+  });
 });
 
 // Count-up animation inside horizontal scroll
@@ -337,6 +383,7 @@ gsap.from(kpi3, {
     kpi3.textContent = parseInt(kpi3.textContent).toLocaleString(); // Format with commas
   }
 });
+
 
 
 /* Program Scroll Animation */
@@ -371,8 +418,8 @@ items.forEach((item, index) => {
         height: 0,
         opacity: 0,
         marginTop: 0,
-        duration: 1,
-        ease: "power2.inOut",
+        duration: 2,
+        ease: "none",
       },
       ">"
     ); // Starts when the next one begins opening
@@ -385,10 +432,14 @@ items.forEach((item, index) => {
       height: "auto",
       opacity: 1,
       marginTop: "2em",
-      duration: 1,
-      ease: "power2.inOut",
+      marginBottom: "5em",
+      marginLeft: "8.875em",
+      duration: 2,
+      ease: "none",
       onComplete: () => ScrollTrigger.refresh(),
     },
     "<"
   ); // Overlaps with the closing animation of the previous sub-wrap
 });
+
+};
