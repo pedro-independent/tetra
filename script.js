@@ -80,65 +80,32 @@ if (page === "home") {
 
 /* Flip */
 
-// SCROLL FLIP POWER-UP
-  // attribute value checker
-  function attr(defaultVal, attrVal) {
-    const defaultValType = typeof defaultVal;
-    if (typeof attrVal !== "string" || attrVal.trim() === "") return defaultVal;
-    if (attrVal === "true" && defaultValType === "boolean") return true;
-    if (attrVal === "false" && defaultValType === "boolean") return false;
-    if (isNaN(attrVal) && defaultValType === "string") return attrVal;
-    if (!isNaN(attrVal) && defaultValType === "number") return +attrVal;
-    return defaultVal;
-  }
-  gsap.registerPlugin(ScrollTrigger, Flip);
-  ScrollTrigger.normalizeScroll(true);
-  // scrollflip component
-  $("[tr-scrollflip-element='component']").each(function (index) {
-    let componentEl = $(this),
-      originEl = componentEl.find("[tr-scrollflip-element='origin']"),
-      targetEl = componentEl.find("[tr-scrollflip-element='target']"),
-      scrubStartEl = componentEl.find("[tr-scrollflip-scrubstart]"),
-      scrubEndEl = componentEl.find("[tr-scrollflip-scrubend]");
-    let startSetting = attr("top top", scrubStartEl.attr("tr-scrollflip-scrubstart")),
-      endSetting = attr("bottom bottom", scrubEndEl.attr("tr-scrollflip-scrubend")),
-      staggerSpeedSetting = attr(0, componentEl.attr("tr-scrollflip-staggerspeed")),
-      staggerDirectionSetting = attr("start", componentEl.attr("tr-scrollflip-staggerdirection")),
-      scaleSetting = attr(false, componentEl.attr("tr-scrollflip-scale")),
-      breakpointSetting = attr(0, componentEl.attr("tr-scrollflip-breakpoint"));
-    let componentIndex = index,
-      timeline,
-      resizeTimer;
-    // asign matching data flip ids
-    originEl.each(function (index) {
-      let flipId = `${componentIndex}-${index}`;
-      $(this).attr("data-flip-id", flipId);
-      targetEl.eq(index).attr("data-flip-id", flipId);
-    });
-    // create timeline
-    function createTimeline() {
-      if (timeline) {
-        timeline.kill();
-        gsap.set(targetEl, { clearProps: "all" });
-      }
-      $("body").addClass("scrollflip-relative");
-      gsap.matchMedia().add(`(min-width: ${breakpointSetting}px)`, () => {
-        const state = Flip.getState(originEl);
-        timeline = gsap.timeline({scrollTrigger: { trigger: scrubStartEl, endTrigger: scrubEndEl, start: startSetting, end: endSetting, scrub: true }});
-        timeline.add(Flip.from(state, { targets: targetEl, scale: scaleSetting, stagger: { amount: staggerSpeedSetting, from: staggerDirectionSetting }}));
-      });
-      $("body").removeClass("scrollflip-relative");
-    }
-    createTimeline();
-    // update on window resize
-    window.addEventListener("resize", function () {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(function () {
-        createTimeline();
-      }, 250);
+gsap.registerPlugin(Flip, ScrollTrigger);
+
+const holders = document.querySelectorAll(".shortage-img-wrap");
+const containerHolder = document.querySelector(".shortage-img-container-holder");
+
+ScrollTrigger.create({
+  trigger: containerHolder,
+  start: "top bottom",
+  once: true, // Runs only once
+  onEnter: () => {
+    const state = Flip.getState(holders);
+
+    holders.forEach(holder => {
+      gsap.set(holder, { width: "4.5em", height: "4.5em" }); // Pre-set the smaller scale before animation
+      containerHolder.appendChild(holder); // Move elements to new container
     });
 
-  });
+    Flip.from(state, {
+      duration: 1,
+      ease: "power2.inOut",
+      stagger: 0.2, // Stagger movement
+      scale: true, // Ensure GSAP interpolates scale change
+    });
+  }
+});
+
 
 /* Headings Reveal On Scroll */
 
@@ -198,14 +165,15 @@ runSplit();
   gsap.timeline({
     scrollTrigger: {
       trigger: numberSection,
-      start: "40% top", // When the section reaches the top
-      end: "+=250%", // Duration of the effect
+      start: "25% top", // When the section reaches the top
+      end: "+=100%", // Duration of the effect
       scrub: 1, // Smooth animation while scrolling
       pin: true, // Keeps the section fixed during the animation
+      pinSpacing: false,
     }
   })
   .to(".kpi-number", {
-    scale: 250, // Zoom into numbers (adjust as needed)
+    scale: 1000, // Zoom into numbers (adjust as needed)
     duration: 3,
     ease: "power1.in",
     transformOrigin: "40% 70%"
@@ -216,7 +184,8 @@ runSplit();
     scrollTrigger: {
       trigger: ".section_about",
       start: "top top",
-      end: "+=100%", // Adjust scroll duration
+      //end: "+=100%", // Adjust scroll duration
+      end: "20% top",
       scrub: 1, // Smooth animation
       pin: true, // Keep section fixed during scroll
     }
@@ -238,14 +207,14 @@ window.addEventListener('load', () => {
     paused: true,
     scrollTrigger: {
       trigger: '#kpi',
-      start: 'top 15%',
+      start: '5% top',
     }
   });
 
   // Count-up animation with specific text content
   tl.from(kpi1, {
     textContent: 34993, // Starting number
-    duration: 2.5,
+    duration: 2,
     snap: { textContent: 1 }, // Ensures smooth counting
     onUpdate: function () {
       kpi1.textContent = parseInt(kpi1.textContent).toLocaleString(); // Format number with commas
@@ -254,7 +223,7 @@ window.addEventListener('load', () => {
   
     tl.from(kpi2, {
     textContent: 20, // start from 0
-    duration: 2.5,
+    duration: 2,
     snap: { textContent: 1 }, // increment by 1
   }, 0);
   
@@ -372,7 +341,7 @@ const kpi3 = document.querySelector("#count .number.cc-comma");
 
 gsap.from(kpi3, {
   textContent: 7890, // Start from 0
-  duration: 2.5,
+  duration: 2,
   snap: { textContent: 1 },
   scrollTrigger: {
     trigger: "#count", // Element inside horizontal scroll
@@ -417,8 +386,9 @@ items.forEach((item, index) => {
       {
         height: 0,
         opacity: 0,
-        marginTop: 0,
-        duration: 2,
+        margin: 0,
+        //duration: 5,
+        delay: 1,
         ease: "none",
       },
       ">"
@@ -432,7 +402,7 @@ items.forEach((item, index) => {
       height: "auto",
       opacity: 1,
       marginTop: "2em",
-      marginBottom: "5em",
+      marginBottom: "3em",
       marginLeft: "8.875em",
       duration: 2,
       ease: "none",
@@ -441,5 +411,19 @@ items.forEach((item, index) => {
     "<"
   ); // Overlaps with the closing animation of the previous sub-wrap
 });
+
+};
+
+
+if (page === "contact") {
+
+  gsap.to(".contact-bg-img", {
+    scale: 1.5,
+    duration: 30,
+    ease: "power1.in",
+  });
+  
+  gsap.fromTo(".contact-bg", {x: "120%"}, {x: "0%", ease: "power3.out", duration: 1.5, delay: 0.5,})
+
 
 };
