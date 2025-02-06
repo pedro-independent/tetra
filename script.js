@@ -423,7 +423,7 @@ if (page === "contact") {
     ease: "power1.in",
   });
   
-  gsap.fromTo(".contact-bg", {x: "120%"}, {x: "0%", ease: "power3.out", duration: 1.5, delay: 0.5,})
+  //gsap.fromTo(".contact-bg", {x: "120%"}, {x: "0%", ease: "power3.out", duration: 1.5, delay: 0.5,})
 
 
 };
