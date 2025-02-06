@@ -108,8 +108,6 @@ ScrollTrigger.create({
 
 
 /* Headings Reveal On Scroll */
-
-
 let splitText, splitHeading;
 
 function runSplit() {
@@ -120,9 +118,6 @@ function runSplit() {
 
 }
 runSplit();
-
-
-/* Headings Reveal On Scroll */
 
   // Select headings with the attribute
   const headings = document.querySelectorAll('[scroll-reveal]');
