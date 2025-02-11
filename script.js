@@ -87,7 +87,7 @@ if (page === "home") {
     let splitLoadText = new SplitType(".hero-p", { types: "lines" });
 
     loading.set(".loading-screen", {
-      //display: "block",
+      display: "block",
     });
 
     gsap.set(splitH1.lines, {
