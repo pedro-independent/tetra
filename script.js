@@ -154,6 +154,7 @@ if (page === "home") {
   initLoader();
 
   /* Flip */
+  if (window.innerWidth > 991) {
   gsap.registerPlugin(Flip, ScrollTrigger);
 
   const holders = document.querySelectorAll(".shortage-img-wrap");
@@ -181,7 +182,8 @@ if (page === "home") {
       });
     },
   });
-
+  }
+  
   /* Headings Reveal On Scroll */
   let splitText, splitHeading;
 
