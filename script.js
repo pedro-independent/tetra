@@ -151,7 +151,6 @@ if (page === "home") {
     );
   }
 
-  /* Init Loading Function */
   initLoader();
 
   /* Flip */
@@ -229,9 +228,9 @@ if (page === "home") {
       }
     );
   });
-  /* Scroll zoom kpi into section */
 
-  // Select the section containing the numbers
+  /* Scroll zoom kpi into section */
+  if (window.innerWidth > 991) {
   let numberSection = document.querySelector(".kpi-section");
 
   // Create GSAP animation
@@ -271,8 +270,9 @@ if (page === "home") {
       ease: "none",
     });
 
-  /* Count Up KPI's */
+  }
 
+  /* Count Up KPI's */
   window.addEventListener("load", () => {
     const kpi1 = document.querySelector("#kpi .kpi-number.cc-comma");
     const kpi2 = document.querySelector("#kpi .kpi-span");
@@ -375,10 +375,9 @@ if (page === "home") {
     });
   });
 
-  /* Horizontal Scroll */
 
   /* Horizontal Scroll */
-
+  if (window.innerWidth > 991) {
   const hWrap = document.querySelector(".hscroll-wrap");
   const hSection = gsap.utils.toArray(".hscroll-section");
   const navColor = document.querySelector(".navbar");
@@ -482,7 +481,7 @@ if (page === "home") {
       },
     }
   );
-
+}
   /* Program Scroll Animation */
   gsap.set(".program-item-sub-wrap", {
     height: 0,
