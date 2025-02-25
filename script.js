@@ -276,8 +276,8 @@ if (page === "home") {
 
   /* Count Up KPI's */
   window.addEventListener("load", () => {
-    const kpi1 = document.querySelector("#kpi .kpi-number.cc-comma");
-    const kpi2 = document.querySelector("#kpi .kpi-span");
+    const kpi1 = document.querySelector(".kpi-number.cc-comma");
+    const kpi2 = document.querySelector(".kpi-span");
 
     let tl = gsap.timeline({
       paused: true,
@@ -291,7 +291,7 @@ if (page === "home") {
     tl.from(
       kpi1,
       {
-        textContent: 34993, // Starting number
+        textContent: 34980, // Starting number
         duration: 2,
         snap: { textContent: 1 }, // Ensures smooth counting
         onUpdate: function () {
@@ -485,6 +485,7 @@ if (page === "home") {
   );
 }
   /* Program Scroll Animation */
+  if (window.innerWidth > 991) {
   gsap.set(".program-item-sub-wrap", {
     height: 0,
     opacity: 0,
@@ -539,6 +540,7 @@ if (page === "home") {
       "<"
     ); // Overlaps with the closing animation of the previous sub-wrap
   });
+}
 }
 
 if (page === "contact") {
