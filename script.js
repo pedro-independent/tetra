@@ -28,7 +28,7 @@ function initButtonCharacterStagger() {
     });
   });
 }
-
+ 
 initButtonCharacterStagger();
 
 /* Check Section Theme on Scroll */
