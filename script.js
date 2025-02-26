@@ -6,7 +6,6 @@ window.onbeforeunload = function () {
 const page = document.body.dataset.page;
 
 /* Buttons Hover*/
-
 function initButtonCharacterStagger() {
   const offsetIncrement = 0.01; // Transition offset increment in seconds
   const buttons = document.querySelectorAll("[data-button-animate-chars]");
@@ -32,23 +31,85 @@ function initButtonCharacterStagger() {
 
 initButtonCharacterStagger();
 
-/* Menu Color Change On Scroll */
+/* Check Section Theme on Scroll */
+function initCheckSectionThemeScroll() {
+  const navBar = document.querySelector("[data-nav-bar-height]");
+  const themeObserverOffset = navBar ? navBar.offsetHeight / 2 : 0;
 
-// const navMenu = document.querySelector(".navbar-container");
-// const darkSections = document.querySelectorAll("[dark-section]");
+  function checkThemeSection() {
+    const themeSections = document.querySelectorAll("[data-theme-section]");
+    themeSections.forEach((themeSection) => {
+      const rect = themeSection.getBoundingClientRect();
+      const themeSectionTop = rect.top;
+      const themeSectionBottom = rect.bottom;
 
-// darkSections.forEach((section) => {
-//   gsap.to(navMenu, {
-//     color: "#ffffff",
-//     scrollTrigger: {
-//       trigger: section,
-//       start: "top top",
-//       end: "90% top",
-//       toggleActions: "play none reverse none",
-//       markers: true,
-//     }
-//   });
-// });
+      if (
+        themeSectionTop <= themeObserverOffset &&
+        themeSectionBottom >= themeObserverOffset
+      ) {
+        const themeSectionActive = themeSection.getAttribute("data-theme-section") || "";
+        const bgSectionActive = themeSection.getAttribute("data-bg-section") || "";
+
+        document.querySelectorAll("[data-theme-nav]").forEach((elem) => {
+          if (elem.getAttribute("data-theme-nav") !== themeSectionActive) {
+            elem.setAttribute("data-theme-nav", themeSectionActive);
+          }
+        });
+
+        document.querySelectorAll("[data-bg-nav]").forEach((elem) => {
+          if (elem.getAttribute("data-bg-nav") !== bgSectionActive) {
+            elem.setAttribute("data-bg-nav", bgSectionActive);
+          }
+        });
+      }
+    });
+  }
+
+  function startThemeCheck() {
+    document.addEventListener("scroll", checkThemeSection);
+  }
+
+  checkThemeSection();
+  startThemeCheck();
+}
+
+// Initialize Check Section Theme on Scroll
+initCheckSectionThemeScroll();
+
+/* Menu Open */
+const menuBtn = document.querySelector(".navbar-mobile-btn"); // Button trigger
+const navFill = document.querySelector(".nav-fill");
+
+let menuOpen = false;
+
+menuBtn.addEventListener("click", () => {
+  if (!menuOpen) {
+    navFill.style.display = "block"; // Show menu before animation starts
+
+    gsap.to(navFill, {
+      y: "0%",
+      duration: 0.6,
+      ease: "power2.out",
+      onComplete: () => {
+        menuOpen = true;
+        menuBtn.textContent = "Close"; // Change button text to "Close"
+      },
+    });
+  } else {
+    gsap.to(navFill, {
+      y: "-100%",
+      duration: 0.6,
+      ease: "power2.in",
+      onComplete: () => {
+        navFill.style.display = "none"; // Hide menu after animation completes
+        menuOpen = false;
+        menuBtn.textContent = "Menu"; // Change button text back to "Menu"
+      },
+    });
+  }
+});
+
+
 
 /* Links Underline Hover */
 
@@ -165,7 +226,8 @@ if (page === "home") {
   ScrollTrigger.create({
     trigger: containerHolder,
     start: "top bottom",
-    once: true, // Runs only once
+    once: true,
+    //markers: true,
     onEnter: () => {
       const state = Flip.getState(holders);
 
@@ -282,8 +344,8 @@ if (page === "home") {
     let tl = gsap.timeline({
       paused: true,
       scrollTrigger: {
-        trigger: "#kpi",
-        start: "5% top",
+        trigger: ".shortage-img-container-holder",
+        start: "top bottom",
       },
     });
 
