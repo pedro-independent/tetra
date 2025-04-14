@@ -109,63 +109,48 @@ menuBtn.addEventListener("click", () => {
   }
 });
 
-
-
-/* Links Underline Hover */
-
-// ———— animation
-// const hoverLinks = document.querySelectorAll("[hover-link]");
-// hoverLinks.forEach((link) => {
-//   const letters = link.querySelectorAll("[hover-link-text] .char");
-//   link.addEventListener("mouseenter", function () {
-//     gsap.to(letters, {
-//       yPercent: -100,
-//       duration: 0.5,
-//       ease: "power3.out",
-//       stagger: { each: 0.03, from: "start" },
-//       overwrite: true
-//     });
-//   });
-//   link.addEventListener("mouseleave", function () {
-//     gsap.to(letters, {
-//       yPercent: 0,
-//       duration: 0.5,
-//       ease: "power3.out",
-//       stagger: { each: 0.03, from: "start" },
-//     });
-//   });
-// });
-
 if (page === "home") {
   function initLoader() {
+    if (sessionStorage.getItem("loaderPlayed")) {
+      // Loader has already played during this session
+      document.querySelector(".loading-screen").style.display = "none";
+      gsap.set("h1", { opacity: 1 }); // optional fallback
+      gsap.set(".hero-p", { opacity: 1 });
+      gsap.set("#hero-btn", { opacity: 1 });
+      return;
+    }
+  
+    // Mark loader as played
+    sessionStorage.setItem("loaderPlayed", "true");
+  
     var loading = gsap.timeline();
     gsap.defaults({
       ease: "Expo.easeInOut",
       duration: 1.2,
     });
-
+  
     let splitH1 = new SplitType("h1", { types: "lines" });
     let splitLoadText = new SplitType(".hero-p", { types: "lines" });
-
+  
     loading.set(".loading-screen", {
       display: "block",
     });
-
+  
     gsap.set(splitH1.lines, {
       yPercent: 100,
       opacity: 0,
     });
-
+  
     gsap.set(splitLoadText.lines, {
       yPercent: 100,
       opacity: 0,
     });
-
+  
     gsap.set("#hero-btn", {
       yPercent: 100,
       opacity: 0,
-    })
-
+    });
+  
     loading.to(
       ".loading-screen",
       {
@@ -174,7 +159,7 @@ if (page === "home") {
       },
       "<"
     );
-
+  
     loading.to(
       splitH1.lines,
       {
@@ -186,7 +171,7 @@ if (page === "home") {
       },
       "<"
     );
-
+  
     loading.to(
       splitLoadText.lines,
       {
@@ -198,7 +183,7 @@ if (page === "home") {
       },
       "<"
     );
-
+  
     loading.to(
       "#hero-btn",
       {
@@ -211,40 +196,9 @@ if (page === "home") {
       "<"
     );
   }
-
+  
   initLoader();
-
-  /* Flip */
-  if (window.innerWidth > 991) {
-  gsap.registerPlugin(Flip, ScrollTrigger);
-
-  const holders = document.querySelectorAll(".shortage-img-wrap");
-  const containerHolder = document.querySelector(
-    ".shortage-img-container-holder"
-  );
-
-  ScrollTrigger.create({
-    trigger: containerHolder,
-    start: "top bottom",
-    once: true,
-    //markers: true,
-    onEnter: () => {
-      const state = Flip.getState(holders);
-
-      holders.forEach((holder) => {
-        gsap.set(holder, { width: "4.5em", height: "4.5em" }); // Pre-set the smaller scale before animation
-        containerHolder.appendChild(holder); // Move elements to new container
-      });
-
-      Flip.from(state, {
-        duration: 1,
-        ease: "power2.inOut",
-        stagger: 0.2, // Stagger movement
-        scale: true, // Ensure GSAP interpolates scale change
-      });
-    },
-  });
-  }
+  
   
   /* Headings Reveal On Scroll */
   let splitText, splitHeading;
@@ -293,49 +247,6 @@ if (page === "home") {
     );
   });
 
-  /* Scroll zoom kpi into section */
-  if (window.innerWidth > 991) {
-  let numberSection = document.querySelector(".kpi-section");
-
-  // Create GSAP animation
-  gsap
-    .timeline({
-      scrollTrigger: {
-        trigger: numberSection,
-        start: "20% top", // When the section reaches the top
-        end: "+=100%", // Duration of the effect
-        scrub: 1, // Smooth animation while scrolling
-        pin: true, // Keeps the section fixed during the animation
-        pinSpacing: false,
-      },
-    })
-    .to(".kpi-number", {
-      scale: 1000, // Zoom into numbers (adjust as needed)
-      duration: 2.5,
-      ease: "power1.in",
-      transformOrigin: "40% 70%",
-    });
-
-  gsap.set(".about-cover", { opacity: 1 });
-  gsap
-    .timeline({
-      scrollTrigger: {
-        trigger: ".section_about",
-        start: "top top",
-        end: "+=100%",
-        //end: "20% top",
-        scrub: 1, // Smooth animation
-        pin: true, // Keep section fixed during scroll
-      },
-    })
-    .to(".about-cover", {
-      opacity: 0,
-      duration: 1,
-      ease: "none",
-    });
-
-  }
-
   /* Count Up KPI's */
   window.addEventListener("load", () => {
     const kpi1 = document.querySelector(".kpi-number.cc-comma");
@@ -348,78 +259,32 @@ if (page === "home") {
         start: "top bottom",
       },
     });
-
-    // Count-up animation with specific text content
-    tl.from(
-      kpi1,
-      {
-        textContent: 34980, // Starting number
-        duration: 2,
-        snap: { textContent: 1 }, // Ensures smooth counting
-        onUpdate: function () {
-          kpi1.textContent = parseInt(kpi1.textContent).toLocaleString(); // Format number with commas
-        },
-      },
-      0
-    );
-
-    tl.from(
-      kpi2,
-      {
-        textContent: 20, // start from 0
-        duration: 2,
-        snap: { textContent: 1 }, // increment by 1
-      },
-      0
-    );
   });
 
   /* General Parallax */
   document.querySelectorAll("[parallax-container]").forEach((container) => {
     const image = container.querySelector("[parallax-img]");
-
+  
     if (image) {
-      const isHorizontal =
-        container.getAttribute("parallax-container") === "horizontal";
-
-      if (isHorizontal) {
-        // Horizontal Parallax Effect
-        const containerWidth = container.offsetWidth;
-        const imageWidth = image.offsetWidth;
-        const widthDifference = imageWidth - containerWidth;
-
-        gsap.to(image, {
-          x: -widthDifference, // Moves the image horizontally
-          ease: "none",
-          scrollTrigger: {
-            trigger: container,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: true,
-          },
-        });
-      } else {
-        // Vertical Parallax Effect (Default)
-        const containerHeight = container.offsetHeight;
-        const imageHeight = image.offsetHeight;
-        const heightDifference = imageHeight - containerHeight;
-
-        gsap.to(image, {
-          y: -heightDifference, // Moves the image vertically
-          ease: "none",
-          scrollTrigger: {
-            trigger: container,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: true,
-          },
-        });
-      }
+      const containerHeight = container.offsetHeight;
+      const imageHeight = image.offsetHeight;
+      const heightDifference = imageHeight - containerHeight;
+  
+      gsap.to(image, {
+        y: -heightDifference, // Moves the image vertically
+        ease: "none",
+        scrollTrigger: {
+          trigger: container,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: true,
+        },
+      });
     }
   });
+  
 
   /* Values Parallax with Manual Speed Control */
-
   const getSpeed = (element) => {
     // Get speed from data-scroll-speed attribute, default to -100 if not set
     return parseFloat(element.getAttribute("scroll-speed")) || -100;
@@ -463,20 +328,20 @@ if (page === "home") {
   });
 
   // Navbar color change inside horizontal scroll
-  darkhSections.forEach((section) => {
-    gsap.to(navColor, {
-      color: "#ffffff", // Change navbar color to white
-      scrollTrigger: {
-        trigger: section,
-        containerAnimation: scrollTween, // Link to horizontal scroll
-        start: "left center", // When section enters viewport
-        end: "right center",
-        toggleActions: "play none reverse none",
-        onLeave: () => (navColor.style.color = "#0D0E0F"), // Change back to black when leaving
-        onEnterBack: () => (navColor.style.color = "#ffffff"), // Ensure smooth transition back if scrolling backward
-      },
-    });
-  });
+  // darkhSections.forEach((section) => {
+  //   gsap.to(navColor, {
+  //     color: "#ffffff", // Change navbar color to white
+  //     scrollTrigger: {
+  //       trigger: section,
+  //       containerAnimation: scrollTween, // Link to horizontal scroll
+  //       start: "left center", // When section enters viewport
+  //       end: "right center",
+  //       toggleActions: "play none reverse none",
+  //       onLeave: () => (navColor.style.color = "#0D0E0F"), // Change back to black when leaving
+  //       onEnterBack: () => (navColor.style.color = "#ffffff"), // Ensure smooth transition back if scrolling backward
+  //     },
+  //   });
+  // });
 
   // Count-up animation inside horizontal scroll
   const kpi3 = document.querySelector("#count .number.cc-comma");
@@ -548,61 +413,135 @@ if (page === "home") {
 }
   /* Program Scroll Animation */
   if (window.innerWidth > 991) {
-  gsap.set(".program-item-sub-wrap", {
-    height: 0,
-    opacity: 0,
-    margin: 0,
-  });
-
-  let homeValues = gsap.timeline({
-    scrollTrigger: {
-      trigger: ".section_program",
-      start: "top top",
-      end: "bottom top",
-      scrub: true,
-      pin: true,
-      //markers: true,
-    },
-  });
-
-  const items = document.querySelectorAll(".program-item-wrap");
-  const subItems = document.querySelectorAll(".program-item-sub-wrap");
-  const headers = document.querySelectorAll(".program-h3");
-
-  items.forEach((item, index) => {
-    // Close the previous sub-wrap and reset its color
-    if (index > 0) {
-      homeValues.to(
-        subItems[index - 1],
-        {
-          height: 0,
-          opacity: 0,
-          margin: 0,
-          //duration: 5,
-          delay: 1,
-          ease: "none",
-        },
-        ">"
-      ); // Starts when the next one begins opening
-    }
-
-    // Open the current sub-wrap
-    homeValues.to(
-      subItems[index],
-      {
-        height: "auto",
-        opacity: 1,
-        marginTop: "2em",
-        marginBottom: "3em",
-        marginLeft: "8.875em",
-        duration: 2,
-        ease: "none",
-        onComplete: () => ScrollTrigger.refresh(),
+    gsap.set(".program-item-sub-wrap", {
+      height: 0,
+      opacity: 0,
+      marginTop: 0,
+      marginBottom: 0,
+    });
+    
+    let homeValues = gsap.timeline({
+      scrollTrigger: {
+        trigger: ".section_program",
+        start: "top top",
+        end: "+=3000",
+        scrub: true,
+        pin: true,
+        // markers: true,
       },
-      "<"
-    ); // Overlaps with the closing animation of the previous sub-wrap
-  });
+    });
+    
+    const items = document.querySelectorAll(".program-item-wrap");
+    const subItems = document.querySelectorAll(".program-item-sub-wrap");
+    
+    items.forEach((item, index) => {
+      if (index > 0) {
+        homeValues.to(
+          subItems[index - 1],
+          {
+            height: 0,
+            opacity: 0,
+            marginTop: 0,
+            marginBottom: 0,
+            duration: 2, // smoother close
+            ease: "none",
+          },
+          ">"
+        );
+      }
+    
+      homeValues.to(
+        subItems[index],
+        {
+          height: "auto",
+          opacity: 1,
+          marginTop: "2em",
+          marginBottom: "3em",
+          //marginLeft: "8.875em",
+          duration: 2, // smoother open
+          ease: "none",
+          onComplete: () => ScrollTrigger.refresh(),
+        },
+        "<"
+      );
+    });    
 }
+
+    /* Team Overlay */
+    const teamItems = document.querySelectorAll(".team-item");
+    const overlay = document.querySelector(".team-overlay");
+    const closeIcon = document.querySelector(".close-modal-btn");
+    
+    function openModal() {
+      lenis.stop();
+    }
+    
+    function closeModal() {
+      lenis.start();
+    }
+    
+    function hideOverlay() {
+      const activeBio = overlay.querySelector(".team-bio-item.active");
+    
+      if (activeBio) {
+        gsap.to(activeBio, {
+          x: "100%",
+          duration: 0.5,
+          ease: "power2.out",
+          onComplete: () => {
+            activeBio.classList.remove("active");
+            gsap.set(overlay, { display: "none" });
+            closeModal();
+          }
+        });
+      } else {
+        gsap.set(overlay, { display: "none" });
+        closeModal();
+      }
+    }
+    
+    teamItems.forEach(item => {
+      item.addEventListener("click", () => {
+        const name = item.getAttribute("data-name");
+        const allBios = overlay.querySelectorAll(".team-bio-item");
+    
+        gsap.set(overlay, { display: "block" });
+        openModal();
+    
+        allBios.forEach(bio => {
+          gsap.set(bio, { x: "100%" });
+          bio.classList.remove("active");
+        });
+    
+        const targetBio = overlay.querySelector(`.team-bio-item[data-name="${name}"]`);
+        if (targetBio) {
+          targetBio.classList.add("active");
+          gsap.to(targetBio, {
+            x: "0%",
+            duration: 1,
+            ease: "power2.out"
+          });
+        }
+      });
+    });   
+    
+    overlay.addEventListener("click", (e) => {
+      if (e.target.closest(".team-bio-item")) return;
+      hideOverlay();
+    });
+    
+    if (closeIcon) {
+      closeIcon.addEventListener("click", hideOverlay);
+    }
+    
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        const isOverlayVisible = window.getComputedStyle(overlay).display !== "none";
+        if (isOverlayVisible) {
+          hideOverlay();
+        }
+      }
+    });    
 }
 
 if (page === "contact") {
