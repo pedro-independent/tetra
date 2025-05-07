@@ -470,15 +470,18 @@ if (page === "home") {
     /* Team Overlay */
     const teamItems = document.querySelectorAll(".team-item");
     const overlay = document.querySelector(".team-overlay");
-    const closeIcon = document.querySelector(".close-modal-btn");
+    const closeIcons = document.querySelectorAll(".close-modal-btn");
     
     function openModal() {
+      document.body.style.overflow = "hidden"; // Prevent body scroll
       lenis.stop();
     }
     
     function closeModal() {
+      document.body.style.overflow = ""; // Restore scroll
       lenis.start();
     }
+    
     
     function hideOverlay() {
       const activeBio = overlay.querySelector(".team-bio-item.active");
@@ -523,16 +526,17 @@ if (page === "home") {
           });
         }
       });
-    });   
+    });
+    
+    // Attach close button handler to all modal close buttons
+    closeIcons.forEach(icon => {
+      icon.addEventListener("click", hideOverlay);
+    });
     
     overlay.addEventListener("click", (e) => {
       if (e.target.closest(".team-bio-item")) return;
       hideOverlay();
     });
-    
-    if (closeIcon) {
-      closeIcon.addEventListener("click", hideOverlay);
-    }
     
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape") {
@@ -541,7 +545,8 @@ if (page === "home") {
           hideOverlay();
         }
       }
-    });    
+    });
+    
 }
 
 if (page === "contact") {
